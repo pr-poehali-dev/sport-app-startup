@@ -47,6 +47,9 @@ interface Thought {
   date: string;
 }
 
+const TELEGRAM_URL = "https://t.me/ForbesDzhambek";
+const TIPS_URL = ""; // вставь сюда свою ссылку Яндекс Чаевые
+
 type Tab = "routes" | "investments" | "thoughts";
 
 const emptyRoute = { name: "", distance: "", elevation: "", duration: "", difficulty: "Средний", tags: "", description: "" };
@@ -59,6 +62,9 @@ const STATUS_OPTIONS = ["Открыт", "Закрыт"];
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<Tab>("routes");
+  const [tipsUrl, setTipsUrl] = useState(TIPS_URL);
+  const [editingTips, setEditingTips] = useState(false);
+  const [tipsInput, setTipsInput] = useState(TIPS_URL);
 
   // Routes
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -564,6 +570,97 @@ export default function Index() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Tips + Telegram footer */}
+      <div style={{ maxWidth: 1200, margin: "0 auto 40px", padding: "0 24px" }}>
+        <div style={{ background: "var(--app-surface)", border: "1px solid var(--app-border)", borderRadius: 20, overflow: "hidden" }}>
+          {/* Чаевые */}
+          <div style={{ padding: "28px", borderBottom: "1px solid var(--app-border)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 14, background: "linear-gradient(135deg, #fc0, #ff6b00)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ fontSize: 22 }}>☕</span>
+              </div>
+              <div>
+                <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 20, fontWeight: 700, color: "#fff" }}>Поддержать автора</div>
+                <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 2 }}>Отправь чаевые через Яндекс Чаевые — это занимает 10 секунд</div>
+              </div>
+            </div>
+
+            {!tipsUrl && !editingTips ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ flex: 1, padding: "12px 16px", background: "rgba(132,204,22,0.05)", border: "2px dashed rgba(132,204,22,0.25)", borderRadius: 12, fontSize: 13, color: "#6b7280" }}>
+                  Ссылка на чаевые не добавлена
+                </div>
+                <button
+                  onClick={() => setEditingTips(true)}
+                  style={{ padding: "12px 20px", background: "var(--app-lime)", color: "#0a0c0f", border: "none", borderRadius: 12, cursor: "pointer", fontFamily: "'Oswald', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}
+                >
+                  + Добавить ссылку
+                </button>
+              </div>
+            ) : editingTips ? (
+              <div style={{ display: "flex", gap: 10 }}>
+                <input
+                  style={{ flex: 1, background: "var(--app-bg)", border: "1px solid rgba(132,204,22,0.4)", borderRadius: 12, padding: "12px 16px", color: "#e8eaed", fontSize: 14, fontFamily: "'IBM Plex Sans', sans-serif", outline: "none" }}
+                  placeholder="https://pay.yandex.ru/..."
+                  value={tipsInput}
+                  onChange={(e) => setTipsInput(e.target.value)}
+                  autoFocus
+                />
+                <button
+                  onClick={() => { setTipsUrl(tipsInput); setEditingTips(false); }}
+                  style={{ padding: "12px 20px", background: "var(--app-lime)", color: "#0a0c0f", border: "none", borderRadius: 12, cursor: "pointer", fontFamily: "'Oswald', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase" }}
+                >
+                  Сохранить
+                </button>
+                <button
+                  onClick={() => setEditingTips(false)}
+                  style={{ padding: "12px 16px", background: "transparent", color: "#6b7280", border: "1px solid var(--app-border)", borderRadius: 12, cursor: "pointer", fontSize: 13 }}
+                >
+                  Отмена
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                <a
+                  href={tipsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "14px 24px", background: "linear-gradient(135deg, #fc0, #ff8c00)", color: "#0a0c0f", borderRadius: 14, textDecoration: "none", fontFamily: "'Oswald', sans-serif", fontSize: 16, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                >
+                  <span>☕</span> Оставить чаевые
+                </a>
+                <button
+                  onClick={() => { setTipsInput(tipsUrl); setEditingTips(true); }}
+                  style={{ padding: "14px 16px", background: "transparent", color: "#6b7280", border: "1px solid var(--app-border)", borderRadius: 12, cursor: "pointer" }}
+                  title="Изменить ссылку"
+                >
+                  <Icon name="Pencil" size={15} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Telegram */}
+          <a
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "flex", alignItems: "center", gap: 14, padding: "20px 28px", textDecoration: "none", transition: "background 0.2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <div style={{ width: 46, height: 46, borderRadius: 14, background: "linear-gradient(135deg, #2aabee, #229ed9)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <span style={{ fontSize: 22 }}>✈️</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 18, fontWeight: 600, color: "#fff" }}>Telegram</div>
+              <div style={{ fontSize: 13, color: "#6b7280", marginTop: 1 }}>@ForbesDzhambek — пиши напрямую</div>
+            </div>
+            <Icon name="ExternalLink" size={16} style={{ color: "#4b5563" }} />
+          </a>
+        </div>
       </div>
 
       {/* Bottom nav */}
